@@ -2,6 +2,9 @@ import socket
 import tkinter
 from tkinter import filedialog
 import rsa
+from tkinter import ttk
+import tkinter as tk
+from tkinter.messagebox import showinfo
 import tqdm
 import time
 
@@ -36,7 +39,7 @@ def decrypt(ciphertext, key):
         return False
 
 
-def sign_sha1(message, key): # sign and verify with key
+def sign_sha1(message, key):  # sign and verify with key
     return rsa.sign(message.encode('ascii'), key, 'SHA-1')
 
 
@@ -98,9 +101,9 @@ def tk_button_open_file_function():
                                                       ("avi files", "*.avi"),
                                                       ("jpg files", "*.jpg")))
     print(file_path)
-    #file = open(file_path, 'r')
-    #print(file.read())
-    #file.close()
+    # file = open(file_path, 'r')
+    # print(file.read())
+    # file.close()
     global file_path_test
     file_path_test = file_path
     text_variable_label2.set(file_path_test)
@@ -128,9 +131,10 @@ def tk_button_send_file_function():
             client.sendall(data)
             c += len(data)
             # progress.update(len(bytes_read))
+            progress(c, fileSize)
         endTime = time.time()
 
-    print("File transfer complete:", endTime - startTime)
+    print("File transfer complete:", endTime - startTime, " s")
 
 
 #  Keys
@@ -138,7 +142,7 @@ generate_keys()
 publicKey, privateKey = load_keys()
 print("Keys Generated")
 
-#test kluczy
+# test kluczy
 encrypt_decrypt_message()
 
 #  Sockets
@@ -146,17 +150,16 @@ HOST = '192.168.1.12'  # 127.0.0.1 /// 0.0.0.0 /// 89.64.149.219 # IP = socket.g
 PORT = 8888
 BUFFER = 1024
 
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #  creating socket
-#client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-client.connect((HOST, PORT))  #  CONNECT TO SERVER
-
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # creating socket
+# client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+client.connect((HOST, PORT))  # CONNECT TO SERVER
 
 #  SEND NAME TO SERVER
-name = input('Twoje imie: ').encode("utf8")
+name = "bolek".encode("utf8")
+
+# input('Twoje imie: ').encode("utf8")
 client.send(name)
 print(client.recv(BUFFER).decode("utf8"))
-
 
 #  -------
 #  TKINTER
@@ -169,7 +172,7 @@ tk_window.geometry('300x500')
 #  zmienne globalne do tkintera
 #  (aby użyć zmiennej w argumencie ->lambda, zwrot niemożliwy w łatwy sposób dlatego lepiej globalne)
 #  -------------------
-file_path_test = "path to the file we are sending" # ZMIENIC NAZWE TEJ ZMIENNEJ NA COS LEPSZEGO
+file_path_test = "path to the file we are sending"  # ZMIENIC NAZWE TEJ ZMIENNEJ NA COS LEPSZEGO
 text_variable_label2 = tkinter.StringVar()
 text_variable_label2.set(file_path_test)
 
@@ -188,7 +191,6 @@ tk_entry.pack()
 tk_sendButton = tkinter.Button(tk_window, text='send message', command=tk_button_send_message_function)
 tk_sendButton.pack()  # side=tkinter.TOP #  x = 0, y = 0
 
-
 tk_label2 = tkinter.Label(tk_window, textvariable=text_variable_label2)
 tk_label2.pack()
 
@@ -200,5 +202,44 @@ tk_fileOpenButton.pack()
 
 tk_fileSendButton = tkinter.Button(tk_window, text='send file', command=tk_button_send_file_function)
 tk_fileSendButton.pack()
+
+
+# TOMEK zmiany
+
+def update_progress_label():
+    return f"Current Progress: {pb['value']}%"
+
+
+def progress(data_read, all_data):
+    if pb['value'] < 100:
+        # pb['value'] += 20
+        pb['value'] = data_read * 100 / all_data
+
+        value_label['text'] = update_progress_label()
+    else:
+        showinfo(message='The progress completed!')
+
+
+tk_bar_name = tkinter.Label(tk_window, text='Progress Bar:')
+tk_bar_name.pack()
+
+# progressbar
+pb = ttk.Progressbar(
+    tk_window,
+    orient='horizontal',
+    mode='determinate',
+    length=280
+)
+# place the progressbar
+# pb.grid(column=0, row=0, columnspan=2, padx=10, pady=20)
+pb.pack()
+
+tk_progress_value = ttk.Label(tk_window, text=progress)
+tk_progress_value.pack()
+
+# label
+value_label = ttk.Label(tk_window, text=update_progress_label)
+# value_label.grid(column=0, row=1, columnspan=2)
+value_label.pack()
 
 tk_window.mainloop()

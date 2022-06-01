@@ -22,26 +22,26 @@ from Crypto.Util.Padding import pad, unpad
 
 
 def load_keys():
-    with open('KeysA/publicKeyA.pem', 'rb') as f:
+    with open('../KeysA/publicKeyA.pem', 'rb') as f:
         publicKeyA = rsa.PublicKey.load_pkcs1(f.read())
-    with open('KeysA/privateKeyA.pem', 'rb') as f:
+    with open('../KeysA/privateKeyA.pem', 'rb') as f:
         privateKeyA = rsa.PrivateKey.load_pkcs1(f.read())
-    with open('KeysB/publicKeyB.pem', 'rb') as f:
+    with open('../KeysB/publicKeyB.pem', 'rb') as f:
         publicKeyB = rsa.PublicKey.load_pkcs1(f.read())
-    with open('KeysB/privateKeyB.pem', 'rb') as f:
+    with open('../KeysB/privateKeyB.pem', 'rb') as f:
         privateKeyB = rsa.PrivateKey.load_pkcs1(f.read())
 
     return publicKeyA, privateKeyA, publicKeyB, privateKeyB
 
 
 def load_ecnrypted_keys():
-    with open('KeysA/encryptedPublicKeyA.txt', 'r') as f:
+    with open('../KeysA/encryptedPublicKeyA.txt', 'r') as f:
         cipherPublicA = f.read()
-    with open('KeysA/encryptedPrivateKeyA.txt', 'r') as f:
+    with open('../KeysA/encryptedPrivateKeyA.txt', 'r') as f:
         cipherPrivateA = f.read()
-    with open('KeysB/encryptedPublicKeyB.txt', 'r') as f:
+    with open('../KeysB/encryptedPublicKeyB.txt', 'r') as f:
         cipherPublicB = f.read()
-    with open('KeysB/encryptedPrivateKeyB.txt', 'r') as f:
+    with open('../KeysB/encryptedPrivateKeyB.txt', 'r') as f:
         cipherPrivateB = f.read()
 
     return cipherPublicA, cipherPrivateA, cipherPublicB, cipherPrivateB
@@ -74,13 +74,13 @@ def encryptRSAKeysAndSave():
     cipherPublicB = cbc.encrypt(str(publicB)).decode('utf-8')
     cipherPrivateB = cbc.encrypt(str(privateB)).decode('utf-8')
 
-    with open('KeysA/encryptedPublicKeyA.txt', 'w') as f:
+    with open('../KeysA/encryptedPublicKeyA.txt', 'w') as f:
         f.write(cipherPublicA)
-    with open('KeysA/encryptedPrivateKeyA.txt', 'w') as f:
+    with open('../KeysA/encryptedPrivateKeyA.txt', 'w') as f:
         f.write(cipherPrivateA)
-    with open('KeysB/encryptedPublicKeyB.txt', 'w') as f:
+    with open('../KeysB/encryptedPublicKeyB.txt', 'w') as f:
         f.write(cipherPublicB)
-    with open('KeysB/encryptedPrivateKeyB.txt', 'w') as f:
+    with open('../KeysB/encryptedPrivateKeyB.txt', 'w') as f:
         f.write(cipherPrivateB)
 
 
@@ -116,15 +116,3 @@ y = decryptRSAKeysAndReturn()
 for x in y:
     print(x)
 print()
-
-
-
-""""
-print('TESTING ENCRYPTION')
-print('Plaintext: ', publicA)
-print('Ciphertext:', cipherPublicA)
-
-print('\nTESTING DECRYPTION')
-print('Plaintext:', cbc.decrypt(cipherPublicA).decode('utf-8'))
-print('Ciphertext:', cipherPublicA)
-"""""
