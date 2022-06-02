@@ -45,25 +45,24 @@ def encrypt_decrypt_message(publicKeyB, privateKeyB):
         print("Could not verift the message signature")
 
 
-def button_open_file_function(text_variable_label2):
-    file_path = filedialog.askopenfilename(title="BSK - which file to open?",
-                                           filetypes=(("txt files", "*.txt"),
-                                                      ("all files", "*.*"),
-                                                      ("png files", "*.png"),
-                                                      ("pdf files", "*.pdf"),
-                                                      ("avi files", "*.avi"),
-                                                      ("jpg files", "*.jpg")))
-    print(file_path)
-    global file_path_test
-    file_path_test = file_path
-    text_variable_label2.set(file_path_test)
+def button_open_file_function(path_string_var):
+    path = filedialog.askopenfilename(title="BSK - which file to open?",
+                                      filetypes=(("txt files", "*.txt"),
+                                                 ("all files", "*.*"),
+                                                 ("png files", "*.png"),
+                                                 ("pdf files", "*.pdf"),
+                                                 ("avi files", "*.avi"),
+                                                 ("jpg files", "*.jpg")))
+    print(path)
+    path_string_var.set(path)
 
 
-def button_send_file_function(client, BUFFER, progress):
+def button_send_file_function(client, BUFFER, path):
     client.send("file".encode("utf8"))
 
     SEPARATOR = "<SEPARATOR>"
-    filePath = file_path_test
+    # filePath = file_path_test
+    filePath = path
     fileSize = os.path.getsize(filePath)
 
     client.send(f"{filePath}{SEPARATOR}{fileSize}".encode())
@@ -81,7 +80,7 @@ def button_send_file_function(client, BUFFER, progress):
             client.sendall(data)
             c += len(data)
             # progress.update(len(bytes_read))
-            progress(c, fileSize)
+            # progress(c, fileSize)
         endTime = time.time()
 
     print("File transfer complete:", endTime - startTime, " s")
