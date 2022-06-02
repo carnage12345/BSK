@@ -1,10 +1,9 @@
 from tkinter import filedialog
+from tkinter.messagebox import showinfo
 import time
 from RSAKeysLibrary import encrypt, decrypt, sign_sha1, verify_sha1
 import os
 
-
-# Jaworski
 
 def button_send_message(entry, client):
     message = entry.get()
@@ -47,8 +46,8 @@ def encrypt_decrypt_message(publicKeyB, privateKeyB):
 
 def button_open_file_function(path_string_var):
     path = filedialog.askopenfilename(title="BSK - which file to open?",
-                                      filetypes=(("txt files", "*.txt"),
-                                                 ("all files", "*.*"),
+                                      filetypes=(("all files", "*.*"),
+                                                 ("txt files", "*.txt"),
                                                  ("png files", "*.png"),
                                                  ("pdf files", "*.pdf"),
                                                  ("avi files", "*.avi"),
@@ -57,7 +56,7 @@ def button_open_file_function(path_string_var):
     path_string_var.set(path)
 
 
-def button_send_file_function(client, BUFFER, path):
+def button_send_file_function(client, BUFFER, path, pb, pb_value):
     client.send("file".encode("utf8"))
 
     SEPARATOR = "<SEPARATOR>"
@@ -69,34 +68,27 @@ def button_send_file_function(client, BUFFER, path):
 
     print(filePath)
 
-    print(fileSize)
+    print(str(fileSize), ' B, ', str(fileSize/1024), ' KB, ', str(fileSize/1048576),  ' MB')
     with open(filePath, "rb") as f:
-        c = 0
+        sendDataSize = 0
         startTime = time.time()
-        while c < fileSize:
+        while sendDataSize < fileSize:
             data = f.read(BUFFER)
             if not data:
                 break
             client.sendall(data)
-            c += len(data)
+            sendDataSize += len(data)
+            print(str(sendDataSize * 100 / fileSize) + ' %')
             # progress.update(len(bytes_read))
-            # progress(c, fileSize)
-        endTime = time.time()
+            # progress_bar(pb, pb_value, sendDataSize, fileSize)
 
+            # Progress Bar
+            if pb['value'] < 100:
+                pb['value'] = int(sendDataSize * 100 / fileSize)
+                pb_value['text'] = f"Current Progress: {pb['value']}%"  # update_progress_label(pb)
+
+    endTime = time.time()
+    showinfo(message='The progress completed!')
+    pb['value'] = 0
+    pb_value['text'] = f"Current Progress: 0%"
     print("File transfer complete:", endTime - startTime, " s")
-
-
-# Żebrowski
-
-def update_progress_label(pb):
-    return f"Current Progress: {pb['value']}%"
-
-
-def progress(pb, value_label, showinfo, data_read, all_data):
-    if pb['value'] < 100:
-        # pb['value'] += 20
-        pb['value'] = data_read * 100 / all_data
-
-        value_label['text'] = update_progress_label()
-    else:
-        showinfo(message='The progress completed!')
