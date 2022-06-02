@@ -18,7 +18,7 @@ if __name__ == "__main__":
     #  Sockets
     HOST = '192.168.1.12'  # 127.0.0.1 /// 0.0.0.0 /// 89.64.149.219 # IP = socket.gethostbyname(socket.gethostname())
     PORT = 8888
-    BUFFER = 1024
+    BUFFER = 4194304  # 2097152 # 1048576  # 1024
 
     # Creating client
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # creating socket

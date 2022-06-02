@@ -15,7 +15,7 @@ if __name__ == "__main__":
     #  Sockets
     HOST = '192.168.1.12'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
     PORT = 8888
-    BUFFER = 1024
+    BUFFER = 4194304 # 2097152 # 1048576   # 1024
 
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
@@ -56,7 +56,8 @@ if __name__ == "__main__":
 
             fileName = os.path.basename(filePath)
             fileSize = int(fileSize)
-            print(fileSize)
+            # print(fileSize)
+            print(str(fileSize), ' B, ', str(fileSize / 1024), ' KB, ', str(fileSize / 1048576), ' MB')
 
             #progress
             with open("./test2/" + fileName, "wb") as f:
@@ -74,6 +75,6 @@ if __name__ == "__main__":
 
                 endTime = time.time()
 
-            print("plik odebrany:", endTime - startTime)
+            print("plik odebrany:", endTime - startTime, ' s')
 
 
