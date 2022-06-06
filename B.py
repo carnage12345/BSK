@@ -6,7 +6,6 @@ from tkinterLibrary import *
 from RSAKeysLibrary import generate_keys, load_keys
 
 if __name__ == "__main__":
-
     # Keys
     generate_keys('B')
     publicKeyB, privateKeyB = load_keys('B')
@@ -31,6 +30,7 @@ if __name__ == "__main__":
 
     #  tk
     window = tk.Tk()
+    window.title('Client B')
     window.geometry('300x500')
 
     #  GLOBALS FOR tk #
@@ -46,15 +46,18 @@ if __name__ == "__main__":
     path_label = tk.Label(window, textvariable=path_string_var).pack()
 
     # pb = Progress Bar
-    pb_label = tk.Label(window, text='Progress Bar:')#.grid(column=0, row=3, padx=10, pady=10, sticky=tk.E)
+    pb_label = tk.Label(window, text='Progress Bar:')  # .grid(column=0, row=3, padx=10, pady=10, sticky=tk.E)
     pb_label.pack()
-    pb = ttk.Progressbar(window, orient='horizontal', mode='determinate', length=280)#.grid(column=0, row=4, padx=10, pady=10, sticky=tk.E)
+    pb = ttk.Progressbar(window, orient='horizontal', mode='determinate',
+                         length=280)  # .grid(column=0, row=4, padx=10, pady=10, sticky=tk.E)
     pb.pack()
-    pb_value = ttk.Label(window, text="Current Progress: 0%")#.grid(column=0, row=5, padx=10, pady=10, sticky=tk.E)
+    pb_value = ttk.Label(window, text="Current Progress: 0%")  # .grid(column=0, row=5, padx=10, pady=10, sticky=tk.E)
     pb_value.pack()
 
-
-    fileOpenButton = tk.Button(window, text='file dialog', command=lambda: button_open_file_function(path_string_var)).pack()
-    fileSendButton = tk.Button(window, text='send file', command=lambda: button_send_file_function(client, BUFFER, path_string_var.get(), pb, pb_value)).pack()
+    fileOpenButton = tk.Button(window, text='file dialog',
+                               command=lambda: button_open_file_function(path_string_var)).pack()
+    fileSendButton = tk.Button(window, text='send file',
+                               command=lambda: button_send_file_function(client, BUFFER, path_string_var.get(), pb,
+                                                                         pb_value)).pack()
 
     window.mainloop()
