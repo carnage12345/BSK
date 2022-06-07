@@ -1,10 +1,11 @@
 #!/usr/bin/python
 import threading
 import time
+import os
 
 
 class ReceiveThread(threading.Thread):
-    def __init__(self, threadID, name, socket, HOST, PORT, BUFFER, os):
+    def __init__(self, threadID, name, socket, HOST, PORT, BUFFER):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -12,7 +13,6 @@ class ReceiveThread(threading.Thread):
         self.HOST = HOST
         self.PORT = PORT
         self.BUFFER = BUFFER
-        self.os = os
 
 
     def run(self):
@@ -49,7 +49,7 @@ class ReceiveThread(threading.Thread):
                 received = client.recv(self.BUFFER).decode()
                 filePath, fileSize = received.split(SEPARATOR)
 
-                fileName = self.os.path.basename(filePath)
+                fileName = os.path.basename(filePath)
                 fileSize = int(fileSize)
                 print(str(fileSize), ' B, ', str(fileSize / 1024), ' KB, ', str(fileSize / 1048576), ' MB')
 

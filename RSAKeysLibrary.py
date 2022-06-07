@@ -13,16 +13,17 @@ from Crypto.Util.Padding import pad, unpad
 # Jaworski
 def generate_keys(letter):
     (publicKey, privateKey) = rsa.newkeys(1024)  # 1024 - 128 byte key
-    with open('Keys' + letter + '/publicKey' + letter + '.pem', 'wb') as f:
+    with open('./PublicKeys/publicKey' + letter + '.pem', 'wb') as f:
         f.write(publicKey.save_pkcs1('PEM'))
-    with open('Keys' + letter + '/privateKey' + letter + '.pem', 'wb') as f:
+    with open('./privateKeys/privateKey' + letter + '.pem', 'wb') as f:
         f.write(privateKey.save_pkcs1('PEM'))
+    print("Keys Generated")
 
 
 def load_keys(letter):
-    with open('Keys' + letter + '/publicKey' + letter + '.pem', 'rb') as f:
+    with open('./PublicKeys/publicKey' + letter + '.pem', 'rb') as f:
         publicKey = rsa.PublicKey.load_pkcs1(f.read())
-    with open('Keys' + letter + '/privateKey' + letter + '.pem', 'rb') as f:
+    with open('./privateKeys/privateKey' + letter + '.pem', 'rb') as f:
         privateKey = rsa.PrivateKey.load_pkcs1(f.read())
 
     return publicKey, privateKey
