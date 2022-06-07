@@ -2,33 +2,51 @@
 import threading
 import time
 
+
 class ReceiveThread(threading.Thread):
-    def __init__(self, threadID, name, client, HOST, PORT, BUFFER, os):
+    def __init__(self, threadID, name, socket, HOST, PORT, BUFFER, os):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
-        self.client = client
+        self.socket = socket
         self.HOST = HOST
         self.PORT = PORT
         self.BUFFER = BUFFER
         self.os = os
 
+
     def run(self):
-        print("Starting " + self.name)
+        print("Starting " + self.name + " receive thread")
+
+        self.socket.bind((self.HOST, self.PORT))
+        self.socket.listen(2)  # liczba miejsc w kolejce
+
+        print("Server " + self.name + " ONLINE")
+
+        client, address = self.socket.accept()
+        print(f"Uzyskano polaczenie od {address} | lub {address[0]}:{address[1]}")
+
+        #  RECEIVE NAME FROM CLIENT
+        nick = client.recv(self.BUFFER).decode("utf8")
+        print(f"[{address[0]}{address[1]}]: Nazwa użytkownika: {nick}")
+
+        msg = f"Witaj na serwerze , {nick}!".encode("utf8")
+        client.send(msg)
+
         while True:
-            TEST = self.client.recv(self.BUFFER).decode("utf8")
+            TEST = client.recv(self.BUFFER).decode("utf8")
             print(TEST)
             if TEST == "message":
                 print("we received a message my lord")
 
-                msg = self.client.recv(self.BUFFER).decode("utf8")
+                msg = client.recv(self.BUFFER).decode("utf8")
                 print(msg)
 
             if TEST == "file":
                 print("a file has been received my liege")
 
                 SEPARATOR = "<SEPARATOR>"
-                received = self.client.recv(self.BUFFER).decode()
+                received = client.recv(self.BUFFER).decode()
                 filePath, fileSize = received.split(SEPARATOR)
 
                 fileName = self.os.path.basename(filePath)
@@ -42,7 +60,7 @@ class ReceiveThread(threading.Thread):
                     startTime = time.time()
 
                     while receivedDataSize < int(fileSize):
-                        data = self.client.recv(self.BUFFER)
+                        data = client.recv(self.BUFFER)
                         if not data:
                             break  # jesli nic nie dostaje przerwij
                         f.write(data)
@@ -51,16 +69,3 @@ class ReceiveThread(threading.Thread):
                     endTime = time.time()
 
                 print("plik odebrany:", endTime - startTime, ' s')
-
-        print("Exiting " + self.name)
-
-def wysylka(self):
-    print("Starting " + self.name)
-    print('chuj')
-    print("Exiting " + self.name)
-
-def gui(self):
-    print("Starting " + self.name)
-    print('chuj')
-    print("Exiting " + self.name)
-

@@ -5,19 +5,28 @@ from tkinterLibrary import *
 
 
 class GUIThread(threading.Thread):
-    def __init__(self, threadID, name, client, BUFFER):
+    def __init__(self, threadID, name, socket, HOST, PORT, BUFFER):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
-        self.client = client
+        self.socket = socket
+        self.HOST = HOST
+        self.PORT = PORT
         self.BUFFER = BUFFER
 
     def run(self):
-        print("Starting " + self.name)
+        print("Starting " + self.name + " GUI Thread")
+
+        self.socket.connect((self.HOST, self.PORT))  # CONNECT TO SERVER
+
+        #  SEND NAME TO SERVER
+        self.socket.send((self.name + 'lek').encode('utf8'))
+        print(self.socket.recv(self.BUFFER).decode("utf8"))
+
 
         #  tk
         window = tk.Tk()
-        window.title('Client B')
+        window.title('Client ' + self.name)
         window.geometry('300x500')
 
         #  GLOBALS FOR tk #
@@ -34,7 +43,7 @@ class GUIThread(threading.Thread):
         entry = tk.Entry(window)
         entry.pack()
 
-        sendButton = tk.Button(window, text='send message', command=lambda: button_send_message(entry, self.client))
+        sendButton = tk.Button(window, text='send message', command=lambda: button_send_message(entry, self.socket))
         sendButton.pack()
 
         path_label = tk.Label(window, textvariable=path_string_var)
@@ -53,7 +62,7 @@ class GUIThread(threading.Thread):
         fileOpenButton = tk.Button(window, text='file dialog',command=lambda: button_open_file_function(path_string_var))
         fileOpenButton.pack()
 
-        fileSendButton = tk.Button(window, text='send file',command=lambda: button_send_file_function(self.client, self.BUFFER, path_string_var.get(), pb, pb_value))
+        fileSendButton = tk.Button(window, text='send file', command=lambda: button_send_file_function(self.socket, self.BUFFER, path_string_var.get(), pb, pb_value))
         fileSendButton.pack()
 
         window.mainloop()
