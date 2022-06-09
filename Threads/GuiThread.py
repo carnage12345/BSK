@@ -1,6 +1,8 @@
 import threading
 import tkinter as tk
 from tkinter import ttk
+from tkinter import OptionMenu
+
 from tkinterLibrary import *
 
 
@@ -35,48 +37,45 @@ class GuiThread(threading.Thread):
         pathStringVar.set("path to the file we are sending")
 
         #  tk MAIN PROGRAM
-        title = tk.Label(window, text='BSK Project')
-        title.pack()
-
-        message = tk.Label(window, text='Message:')
-        message.pack()
-
-        entry = tk.Entry(window)
-        entry.pack()
-
-        sendButton = tk.Button(window, text='send message', command=lambda: button_send_message(entry, self.socket))
-        sendButton.pack()
-
-        pathLabel = tk.Label(window, textvariable=pathStringVar)
-        pathLabel.pack()
+        tk.Label(window, text='BSK Project').pack()
+        tk.Label(window, text='Message:').pack()
+        entry = tk.Entry(window).pack()
+        sendButton = tk.Button(window, text='send message', command=lambda: button_send_message(entry, self.socket)).pack()
+        tk.Label(window, textvariable=pathStringVar).pack()
 
         # pb = Progress Bar
-        pbLabel = tk.Label(window, text='Progress Bar:')  # .grid(column=0, row=3, padx=10, pady=10, sticky=tk.E)
-        pbLabel.pack()
-
-        pb = ttk.Progressbar(window, orient='horizontal', mode='determinate',
-                             length=280)  # .grid(column=0, row=4, padx=10, pady=10, sticky=tk.E)
+        tk.Label(window, text='Progress Bar:').pack()
+        pb = ttk.Progressbar(window, orient='horizontal', mode='determinate', length=280)
         pb.pack()
 
-        pbDescription = ttk.Label(window,
-                                  text="Current Progress: 0%")  # .grid(column=0, row=5, padx=10, pady=10, sticky=tk.E)
+        pbDescription = ttk.Label(window, text="Current Progress: 0%")
         pbDescription.pack()
 
-        fileOpenButton = tk.Button(window, text='file dialog',
-                                   command=lambda: button_open_file_function(pathStringVar))
-        fileOpenButton.pack()
+        fileOpenButton = tk.Button(window, text='file dialog', command=lambda: button_open_file_function(pathStringVar)).pack()
+
+        tk.Label(window, text='Choose ciphering mode:').pack()
+
+        clicked = tk.StringVar()
+        clicked.set("ECB")  # default value
+        options = [
+            'ECB',
+            'CBC'
+        ]
+
+        OptionMenu(window, clicked, *options).pack()
+
+        cipheringMode = clicked.get()
+        print(cipheringMode)
 
         fileSendButton = tk.Button(window, text='send file',
                                    command=lambda: button_send_file_function(self.socket, self.BUFFER,
                                                                              pathStringVar.get(), pb, pbDescription, window))
         fileSendButton.pack()
 
-        receivedLabel = tk.Label(window, text='Received section:')
-        receivedLabel.pack()
+        tk.Label(window, text='Received section:').pack()
 
         receivedContent = tk.StringVar()
         receivedContent.set('nothing')
-
 
         def check_queue():
             if (self.q.empty()):
@@ -86,10 +85,7 @@ class GuiThread(threading.Thread):
                 print('queue is not empty')
                 receivedContent.set(self.q.get())
 
-        checkReceiveButton = tk.Button(window, text='check', command=check_queue)
-        checkReceiveButton.pack()
-
-        receivedValue = ttk.Label(window, textvariable=receivedContent)
-        receivedValue.pack()
+        tk.Button(window, text='check', command=check_queue).pack()
+        ttk.Label(window, textvariable=receivedContent).pack()
 
         window.mainloop()
