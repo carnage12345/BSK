@@ -4,7 +4,6 @@ import time
 from RSAKeysLibrary import encrypt, decrypt, sign_sha1, verify_sha1
 import os
 
-
 def button_send_message(entry, client):
     message = entry.get()
     print(message)
@@ -44,7 +43,7 @@ def encrypt_decrypt_message(publicKeyB, privateKeyB):
         print("Could not verift the message signature")
 
 
-def button_open_file_function(path_string_var):
+def button_open_file_function(pathStringVar):
     path = filedialog.askopenfilename(title="BSK - which file to open?",
                                       filetypes=(("all files", "*.*"),
                                                  ("txt files", "*.txt"),
@@ -53,10 +52,10 @@ def button_open_file_function(path_string_var):
                                                  ("avi files", "*.avi"),
                                                  ("jpg files", "*.jpg")))
     print(path)
-    path_string_var.set(path)
+    pathStringVar.set(path)
 
 
-def button_send_file_function(client, BUFFER, path, pb, pb_value):
+def button_send_file_function(client, BUFFER, path, pb, pbValue):
     client.send("file".encode("utf8"))
 
     SEPARATOR = "<SEPARATOR>"
@@ -68,7 +67,7 @@ def button_send_file_function(client, BUFFER, path, pb, pb_value):
 
     print(filePath)
 
-    print(str(fileSize), ' B, ', str(fileSize/1024), ' KB, ', str(fileSize/1048576),  ' MB')
+    print(str(fileSize), ' B, ', str(fileSize / 1024), ' KB, ', str(fileSize / 1048576), ' MB')
     with open(filePath, "rb") as f:
         sendDataSize = 0
         startTime = time.time()
@@ -80,15 +79,16 @@ def button_send_file_function(client, BUFFER, path, pb, pb_value):
             sendDataSize += len(data)
             print(str(sendDataSize * 100 / fileSize) + ' %')
             # progress.update(len(bytes_read))
-            # progress_bar(pb, pb_value, sendDataSize, fileSize)
+            # progress_bar(pb, pbValue, sendDataSize, fileSize)
 
             # Progress Bar
             if pb['value'] < 100:
                 pb['value'] = int(sendDataSize * 100 / fileSize)
-                pb_value['text'] = f"Current Progress: {pb['value']}%"  # update_progress_label(pb)
+                pbValue['text'] = f"Current Progress: {pb['value']}%"  # update_progress_label(pb)
 
     endTime = time.time()
     showinfo(message='The progress completed!')
     pb['value'] = 0
-    pb_value['text'] = f"Current Progress: 0%"
+    pbValue['text'] = f"Current Progress: 0%"
     print("File transfer complete:", endTime - startTime, " s")
+

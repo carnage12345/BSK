@@ -1,10 +1,10 @@
 import socket
-from tkinterLibrary import *
 from RSAKeysLibrary import generate_keys, load_keys
 from os.path import exists
+from queue import Queue
 from Threads.ReceiveThread import ReceiveThread
-from Threads.GUIThread import GUIThread
-
+from Threads.GuiThread import GuiThread
+import tkinter as tk
 
 if __name__ == "__main__":
     # Keys
@@ -23,7 +23,8 @@ if __name__ == "__main__":
     receivePORT = 8888
     receiveBUFFER = 4194304  # 2097152 # 1048576   # 1024
 
-    socketReceiveB = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
+    socketReceiveB = socket.socket(socket.AF_INET,
+                                   socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
 
     sendHOST = '192.168.1.12'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
     sendPORT = 8888
@@ -31,10 +32,13 @@ if __name__ == "__main__":
 
     socketSendB = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
 
+    q = Queue()
     # Create threads
-    receivingThreadB = ReceiveThread(1, 'B', socketReceiveB, receiveHOST, receivePORT, receiveBUFFER)
-    GUIThreadB = GUIThread(2, 'B', socketSendB, sendHOST, sendPORT, sendBUFFER)
+    receivingThreadB = ReceiveThread(1, 'B', socketReceiveB, receiveHOST, receivePORT, receiveBUFFER, q)
+    GUIThreadB = GuiThread(2, 'B', socketSendB, sendHOST, sendPORT, sendBUFFER, q)
 
     # Start threads
     receivingThreadB.start()
     GUIThreadB.start()
+    #receivingThreadB.run(globalReceiveB)
+    #GUIThreadB.run(globalReceiveB)

@@ -1,7 +1,7 @@
 from tkinter import ttk
 import tkinter as tk
 from tkinter.messagebox import showinfo
-
+import random
 
 # root window
 root = tk.Tk()
@@ -29,6 +29,8 @@ def stop():
 def test():
     progress()
 
+
+
 # progressbar
 pb = ttk.Progressbar(
     root,
@@ -46,8 +48,8 @@ value_label.grid(column=0, row=1, columnspan=2)
 # start button
 start_button = ttk.Button(
     root,
-    text='Progress'#,
-    #command=progress
+    text='Progress'  # ,
+    # command=progress
 )
 start_button.grid(column=0, row=2, padx=10, pady=10, sticky=tk.E)
 
@@ -64,6 +66,5 @@ test_button = ttk.Button(
     command=test
 )
 test_button.grid(column=1, row=3, padx=10, pady=10, sticky=tk.W)
-
 
 root.mainloop()
