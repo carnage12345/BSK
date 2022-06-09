@@ -68,7 +68,7 @@ class GuiThread(threading.Thread):
 
         fileSendButton = tk.Button(window, text='send file',
                                    command=lambda: button_send_file_function(self.socket, self.BUFFER,
-                                                                             pathStringVar.get(), pb, pbDescription))
+                                                                             pathStringVar.get(), pb, pbDescription, window))
         fileSendButton.pack()
 
         receivedLabel = tk.Label(window, text='Received section:')

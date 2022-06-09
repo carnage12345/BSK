@@ -55,7 +55,7 @@ def button_open_file_function(pathStringVar):
     pathStringVar.set(path)
 
 
-def button_send_file_function(client, BUFFER, path, pb, pbValue):
+def button_send_file_function(client, BUFFER, path, pb, pbValue, window):
     client.send("file".encode("utf8"))
 
     SEPARATOR = "<SEPARATOR>"
@@ -77,14 +77,17 @@ def button_send_file_function(client, BUFFER, path, pb, pbValue):
                 break
             client.sendall(data)
             sendDataSize += len(data)
-            print(str(sendDataSize * 100 / fileSize) + ' %')
+            # print(str(sendDataSize * 100 / fileSize) + ' %')
             # progress.update(len(bytes_read))
             # progress_bar(pb, pbValue, sendDataSize, fileSize)
 
             # Progress Bar
             if pb['value'] < 100:
-                pb['value'] = int(sendDataSize * 100 / fileSize)
+                pb['value'] = int((sendDataSize * 100) / fileSize)
                 pbValue['text'] = f"Current Progress: {pb['value']}%"  # update_progress_label(pb)
+
+            window.update()
+
 
     endTime = time.time()
     showinfo(message='The progress completed!')

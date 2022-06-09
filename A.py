@@ -6,7 +6,6 @@ from queue import Queue
 from Threads.ReceiveThread import ReceiveThread
 from Threads.GuiThread import GuiThread
 
-
 if __name__ == "__main__":
 
     #  Keys
@@ -17,13 +16,13 @@ if __name__ == "__main__":
     publicKeyA, privateKeyA = load_keys('A')
     # decryptRSAKeysAndReturn() # Odszyfrowanie kluczy RSA z dysku i zwrocenie ich jako zmienne
 
-
     #  Socket Receive
     receiveHOST = '192.168.1.12'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
     receivePORT = 8888
     receiveBUFFER = 4194304  # 2097152 # 1048576   # 1024
 
-    socketReceiveA = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
+    socketReceiveA = socket.socket(socket.AF_INET,
+                                   socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
 
     # Socket Send
 
@@ -37,10 +36,8 @@ if __name__ == "__main__":
 
     # Create threads
     receivingThreadA = ReceiveThread(1, 'A', socketReceiveA, receiveHOST, receivePORT, receiveBUFFER, q)
-    GUIThreadA = GuiThread(2, 'A', socketSendA, sendHOST, sendPORT, sendBUFFER, q) #  threadID, name, socket, HOST, PORT, BUFFER)
+    GUIThreadA = GuiThread(2, 'A', socketSendA, sendHOST, sendPORT, sendBUFFER, q)  # threadID, name, socket, HOST, PORT, BUFFER)
 
     # Start threads
     receivingThreadA.start()
     GUIThreadA.start()
-
-

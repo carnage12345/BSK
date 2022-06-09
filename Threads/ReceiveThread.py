@@ -3,6 +3,7 @@ import threading
 import time
 import os
 
+
 class ReceiveThread(threading.Thread):
     def __init__(self, threadID, name, socket, HOST, PORT, BUFFER, queue):
         threading.Thread.__init__(self)
@@ -15,7 +16,7 @@ class ReceiveThread(threading.Thread):
         self.q = queue
 
     def run(self):
-        #global globalReceiveA
+        # global globalReceiveA
 
         print("Starting " + self.name + " receive thread")
 
@@ -38,13 +39,13 @@ class ReceiveThread(threading.Thread):
             TEST = client.recv(self.BUFFER).decode("utf8")
             # print(TEST)
             if TEST == "message":
-                print("we received a message my lord")
+                # print("we received a message my lord")
                 msg = client.recv(self.BUFFER).decode("utf8")
-                print(msg)
+                # print(msg)
                 self.q.put('You received a message:\n' + msg)
 
             if TEST == "file":
-                print("a file has been received my liege")
+                # print("a file has been received my liege")
 
                 SEPARATOR = "<SEPARATOR>"
                 received = client.recv(self.BUFFER).decode()
@@ -69,5 +70,7 @@ class ReceiveThread(threading.Thread):
                         receivedDataSize += len(data)
 
                     endTime = time.time()
-                    print("plik odebrany:", endTime - startTime, ' s')
-                    self.q.put("plik odebrany:", endTime - startTime, ' s')
+                    # print("plik odebrany:", endTime - startTime, ' s')
+                    self.q.put('You received a file:\nName: ' + fileName + '\nPath: ' + str(os.getcwd()) +
+                               '\\acquiredFiles\\' + fileName + '\nSize: ' + str(fileSize / 1048576) +
+                               ' MB\nTransfer time: ' + str(endTime - startTime) + ' s')
