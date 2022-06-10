@@ -39,8 +39,10 @@ class GuiThread(threading.Thread):
         #  tk MAIN PROGRAM
         tk.Label(window, text='BSK Project').pack()
         tk.Label(window, text='Message:').pack()
-        entry = tk.Entry(window).pack()
-        sendButton = tk.Button(window, text='send message', command=lambda: button_send_message(entry, self.socket)).pack()
+        entry = tk.Entry(window)
+        entry.pack()
+        sendButton = tk.Button(window, text='send message', command=lambda: button_send_message(entry, self.socket))
+        sendButton.pack()
         tk.Label(window, textvariable=pathStringVar).pack()
 
         # pb = Progress Bar
@@ -51,7 +53,8 @@ class GuiThread(threading.Thread):
         pbDescription = ttk.Label(window, text="Current Progress: 0%")
         pbDescription.pack()
 
-        fileOpenButton = tk.Button(window, text='file dialog', command=lambda: button_open_file_function(pathStringVar)).pack()
+        fileOpenButton = tk.Button(window, text='file dialog', command=lambda: button_open_file_function(pathStringVar))
+        fileOpenButton.pack()
 
         tk.Label(window, text='Choose ciphering mode:').pack()
 
@@ -69,7 +72,8 @@ class GuiThread(threading.Thread):
 
         fileSendButton = tk.Button(window, text='send file',
                                    command=lambda: button_send_file_function(self.socket, self.BUFFER,
-                                                                             pathStringVar.get(), pb, pbDescription, window))
+                                                                             pathStringVar.get(), pb, pbDescription,
+                                                                             window))
         fileSendButton.pack()
 
         tk.Label(window, text='Received section:').pack()
@@ -77,15 +81,17 @@ class GuiThread(threading.Thread):
         receivedContent = tk.StringVar()
         receivedContent.set('nothing')
 
-        def check_queue():
-            if (self.q.empty()):
-                print('queue is empty')
-                receivedContent.set('nothing')
-            else:
-                print('queue is not empty')
-                receivedContent.set(self.q.get())
+        # def check_queue():
+        #     if self.q.empty():
+        #         print('queue is empty')
+        #         receivedContent.set('nothing')
+        #     else:
+        #         print('queue is not empty')
+        #         receivedContent.set(self.q.get())
+        #
+        # tk.Button(window, text='check', command=check_queue).pack()
 
-        tk.Button(window, text='check', command=check_queue).pack()
+        tk.Button(window, text='check', command=lambda: check_queue(self.q, receivedContent)).pack()
         ttk.Label(window, textvariable=receivedContent).pack()
 
         window.mainloop()

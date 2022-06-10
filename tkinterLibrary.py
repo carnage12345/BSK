@@ -4,6 +4,7 @@ import time
 from RSAKeysLibrary import encrypt, decrypt, sign_sha1, verify_sha1
 import os
 
+
 def button_send_message(entry, client):
     message = entry.get()
     print(message)
@@ -88,10 +89,16 @@ def button_send_file_function(client, BUFFER, path, pb, pbValue, window):
 
             window.update()
 
-
     endTime = time.time()
     showinfo(message='The progress completed!')
     pb['value'] = 0
     pbValue['text'] = f"Current Progress: 0%"
     print("File transfer complete:", endTime - startTime, " s")
 
+def check_queue(q, control):
+    if q.empty():
+        print('queue is empty')
+        control.set('nothing')
+    else:
+        print('queue is not empty')
+        control.set(q.get())
