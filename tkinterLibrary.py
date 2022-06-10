@@ -1,6 +1,9 @@
 from tkinter import filedialog
 from tkinter.messagebox import showinfo
 import time
+
+from Crypto.Cipher import AES
+
 from RSAKeysLibrary import encrypt, decrypt, sign_sha1, verify_sha1
 import os
 
@@ -11,24 +14,44 @@ def button_send_message(entry, client):
     client.send("message".encode("utf8"))
     client.send(message.encode("utf8"))
 
-
-def button_send_message_function_encoded(entry, client):
-    message = entry.get()
+def send_message_encoded_rsa(tk_entry_encoded, client, publicKey, privateKey):
+    message = tk_entry_encoded.get()
     print(message)
 
-    # ciphertext = encrypt(message, publicKey)
-    # signature = sign_sha1(message, privateKey)
+    ciphertext = encrypt(message, publicKey)
+    signature = sign_sha1(message, privateKey)
 
     client.send("message_encoded".encode("utf8"))
-    client.send(message.encode("utf8"))
+    client.send(ciphertext)
 
 
-def encrypt_decrypt_message(publicKeyB, privateKeyB):
+def send_message_encoded_cbc(tk_entry_CBC, sessionKey, pad, client):
+    message = tk_entry_CBC.get()
+    print(message)
+
+    cipherCBC = AES.new(sessionKey, AES.MODE_CBC)  # wybor cbc albo ecb
+    iVectorCBC = cipherCBC.iv
+    ciphertextCBC = cipherCBC.encrypt(pad(message.encode("utf8"), AES.block_size))
+
+    print(ciphertextCBC)
+
+    client.send("message_encoded_cbc".encode("utf8"))
+    client.send(iVectorCBC)  # czy wektor powinien byc zakodowany?
+    client.send(ciphertextCBC)
+
+
+def send_message_encoded_ebc(tk_entry_CBC, sessionKey):
+    message = tk_entry_CBC.get()
+    print(message)
+    cipherECB = AES.new(sessionKey, AES.MODE_ECB)
+
+
+def encrypt_decrypt_message(publicKey, privateKey):
     message = "here i come"
     print(message)
-    ciphertext = encrypt(message, publicKeyB)
-    signature = sign_sha1(message, privateKeyB)
-    plaintext = decrypt(ciphertext, privateKeyB)
+    ciphertext = encrypt(message, publicKey)
+    signature = sign_sha1(message, privateKey)
+    plaintext = decrypt(ciphertext, privateKey)
 
     print(f"CipherText:{ciphertext}")
     print(f"Signature:{signature}")
@@ -38,10 +61,11 @@ def encrypt_decrypt_message(publicKeyB, privateKeyB):
     else:
         print("encryption-decryption failed")
 
-    if verify_sha1(plaintext, signature, publicKeyB):
+    if verify_sha1(plaintext, signature, publicKey):
         print("signature verified")
     else:
-        print("Could not verift the message signature")
+        print("Could not verify the message signature")
+
 
 
 def button_open_file_function(pathStringVar):
@@ -95,6 +119,7 @@ def button_send_file_function(client, BUFFER, path, pb, pbValue, window):
     pbValue['text'] = f"Current Progress: 0%"
     print("File transfer complete:", endTime - startTime, " s")
 
+
 def check_queue(q, control):
     if q.empty():
         print('queue is empty')
@@ -102,3 +127,6 @@ def check_queue(q, control):
     else:
         print('queue is not empty')
         control.set(q.get())
+
+
+

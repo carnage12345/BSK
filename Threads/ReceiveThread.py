@@ -37,23 +37,23 @@ class ReceiveThread(threading.Thread):
 
         # JAWORSKI ZMIANA 1
 
-        # publicKey, privateKey = load_keys(self.name)
-        #
-        # #  SEND PUBLIC KEY TO CLIENT (also receive key from client)
-        # print("wysyłam klucz publiczny (A)")
-        # print(publicKey)
-        # client.send(publicKey.save_pkcs1(format='PEM'))
-        # print("klucz wysłany\n")
-        #
-        # # RECEIVE PUBLIC KEY FROM CLIENT
-        # print("odbieram public key (B)\n")
-        # publicKeyB = rsa.key.PublicKey.load_pkcs1(client.recv(self.BUFFER), format='PEM')  # DER
-        # print("publicKeyB: " + publicKeyB)
-        #
-        # # RECEIVE SESSION KEY FROM CLIENT
-        # print("odbieram session key\n")
-        # sessionKey = decrypt_session_key_with_rsa(client.recv(self.BUFFER), privateKey)
-        # print("sessionKey: " + sessionKey)
+        publicKey, privateKey = load_keys(self.name)
+
+        #  SEND PUBLIC KEY TO CLIENT (also receive key from client)
+        print("wysyłam klucz publiczny (A)")
+        print(publicKey)
+        client.send(publicKey.save_pkcs1(format='PEM'))
+        print("klucz wysłany\n")
+
+        # RECEIVE PUBLIC KEY FROM CLIENT
+        print("odbieram public key (B)\n")
+        clientPublicKey = rsa.key.PublicKey.load_pkcs1(client.recv(self.BUFFER), format='PEM')  # DER
+        print("publicKeyB: " + str(clientPublicKey))
+
+        # RECEIVE SESSION KEY FROM CLIENT
+        print("odbieram session key\n")
+        sessionKey = decrypt_session_key_with_rsa(client.recv(self.BUFFER), privateKey)
+        print("sessionKey: " + str(sessionKey))
 
         while True:
             TEST = client.recv(self.BUFFER).decode("utf8")
@@ -90,21 +90,21 @@ class ReceiveThread(threading.Thread):
                                '\\acquiredFiles\\' + fileName + '\nSize: ' + str(fileSize / 1048576) +
                                ' MB\nTransfer time: ' + str(endTime - startTime) + ' s')
 
-            # if TEST == "message_encoded":
-            #     print("we received a secret message from our spies my lord...")
-            #     msg = client.recv(self.BUFFER)
-            #     print("message encrypted:")
-            #     print(msg)
-            #     print("message decrypted:")
-            #     print(decrypt(msg, privateKey))
-            #
-            # if TEST == "message_encoded_cbc":
-            #     print("CBC message has entered the castle")
-            #     iVectorCBC = client.recv(self.BUFFER)
-            #     ciphertext = client.recv(self.BUFFER)
-            #     print("message encrypted:")
-            #     print(ciphertext)
-            #     print("message decrypted:")
-            #     cipher = AES.new(sessionKey, AES.MODE_CBC, iVectorCBC)
-            #     plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
-            #     print(plaintext)
+            if TEST == "message_encoded":
+                print("we received a secret message from our spies my lord...")
+                msg = client.recv(self.BUFFER)
+                print("message encrypted:")
+                print(msg)
+                print("message decrypted:")
+                print(decrypt(msg, privateKey))
+
+            if TEST == "message_encoded_cbc":
+                print("CBC message has entered the castle")
+                iVectorCBC = client.recv(self.BUFFER)
+                ciphertext = client.recv(self.BUFFER)
+                print("message encrypted:")
+                print(ciphertext)
+                print("message decrypted:")
+                cipher = AES.new(sessionKey, AES.MODE_CBC, iVectorCBC)
+                plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
+                print(plaintext)

@@ -2,9 +2,10 @@ import threading
 import tkinter as tk
 from tkinter import ttk
 from tkinter import OptionMenu
-
+from RSAKeysLibrary import *
 from tkinterLibrary import *
-
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
 
 class GuiThread(threading.Thread):
     def __init__(self, threadID, name, socket, HOST, PORT, BUFFER, queue):
@@ -26,7 +27,36 @@ class GuiThread(threading.Thread):
         self.socket.send((self.name + 'lek').encode('utf8'))
         print(self.socket.recv(self.BUFFER).decode("utf8"))
 
-        #  tk
+        #  RECEIVE PUBLIC KEY FROM SERVER
+        publicKey, privateKey = load_keys(self.name)
+        clientPublicKey = rsa.key.PublicKey.load_pkcs1(self.socket.recv(self.BUFFER), format='PEM')  # DER
+        print(clientPublicKey)
+
+        #  SEND PUBLIC KEY TO SERVER
+        print("wysyłam klucz do Serwera")
+        print(publicKey)
+        self.socket.send(publicKey.save_pkcs1(format='PEM'))
+        print("klucz wysłany\n")
+
+        print("CREATING SESSION KEY:")
+
+        sessionKey = b'mysecretpassword'  # 16 byte password
+        sessionKeyRandom = os.urandom(16)  # PODMIENIĆ NA TO!!!!
+
+
+        # SEND SESSION KEY TO SERVER
+        print("sending session KEY")
+        print(sessionKey)
+        ciphertext = encrypt_session_key_with_rsa(sessionKey, clientPublicKey)  # zamienic na sessionKey3Random
+        # signature
+        self.socket.send(ciphertext)
+        print("sent session KEY\n")
+
+
+
+
+
+        #  TKINTER
         window = tk.Tk()
         window.title('Client ' + self.name)
         # window.geometry('300x500')
@@ -70,6 +100,23 @@ class GuiThread(threading.Thread):
         cipheringMode = clicked.get()
         print(cipheringMode)
 
+        # JAWORSKI
+        entry_encoded = tk.Entry(window)
+        entry_encoded.pack()
+
+        sendButtonEncoded = tk.Button(window, text='send message Encoded RSA',
+                                      command=lambda: send_message_encoded_rsa(entry_encoded, self.socket, publicKey, privateKey))
+        sendButtonEncoded.pack()
+
+        #  message encoded with CBC
+        entry_CBC = tk.Entry(window)
+        entry_CBC.pack()
+
+        tk_sendButtonCBC = tk.Button(window, text='send message Encoded CBC',
+                                     command=lambda: send_message_encoded_cbc(entry_CBC, 'Gowno Morlina', pad, self.socket))
+        tk_sendButtonCBC.pack()
+
+        # MOJE
         fileSendButton = tk.Button(window, text='send file',
                                    command=lambda: button_send_file_function(self.socket, self.BUFFER,
                                                                              pathStringVar.get(), pb, pbDescription,
@@ -80,16 +127,6 @@ class GuiThread(threading.Thread):
 
         receivedContent = tk.StringVar()
         receivedContent.set('nothing')
-
-        # def check_queue():
-        #     if self.q.empty():
-        #         print('queue is empty')
-        #         receivedContent.set('nothing')
-        #     else:
-        #         print('queue is not empty')
-        #         receivedContent.set(self.q.get())
-        #
-        # tk.Button(window, text='check', command=check_queue).pack()
 
         tk.Button(window, text='check', command=lambda: check_queue(self.q, receivedContent)).pack()
         ttk.Label(window, textvariable=receivedContent).pack()

@@ -50,6 +50,16 @@ def verify_sha1(message, signature, key):
     except:
         return False
 
+def encrypt_session_key_with_rsa(session_key, rsa_key):
+    return rsa.encrypt(session_key, rsa_key)
+
+
+def decrypt_session_key_with_rsa(session_key_encoded, rsa_kye):
+    try:
+        return rsa.decrypt(session_key_encoded, rsa_kye)
+    except:
+        return False
+
 
 # Żebrowski
 
