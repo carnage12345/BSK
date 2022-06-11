@@ -75,6 +75,13 @@ class GuiThread(threading.Thread):
         sendButton.pack()
         tk.Label(window, textvariable=pathStringVar).pack()
 
+
+        tk.Label(window, text='Enter your user-friendly password:').pack()
+        password_entry = tk.Entry(window)
+        password_entry.pack()
+        passwordButton = tk.Button(window, text='enter', command=lambda: button_set_password(password_entry, self.name))
+        passwordButton.pack()
+
         # pb = Progress Bar
         tk.Label(window, text='Progress Bar:').pack()
         pb = ttk.Progressbar(window, orient='horizontal', mode='determinate', length=280)

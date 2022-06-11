@@ -8,15 +8,15 @@ from Threads.GuiThread import GuiThread
 
 
 #  Keys
-if not exists('./PublicKeys/publicKeyA.pem') or not exists('./PrivateKeys/privateKeyA.pem'):
+if not exists('./KeysA/PublicKeys/publicKeyA.pem') or not exists('./KeysA/PrivateKeys/privateKeyA.pem'):
     generate_keys('A')  # Wygenerowanie kluczy RSA
 
-# encryptRSAKeysAndSave()  # Utworzenie klucza lokalnego, zaszyfrowanie kluczy RSA kluczem lokalnym i zapisanie na dysku
-#publicKeyA, privateKeyA = load_keys('A')
-# decryptRSAKeysAndReturn() # Odszyfrowanie kluczy RSA z dysku i zwrocenie ich jako zmienne
+#encryptRSAKeysAndSave('A')  # Utworzenie klucza lokalnego, zaszyfrowanie kluczy RSA kluczem lokalnym i zapisanie na dysku
+# publicKeyA, privateKeyA = load_keys('A')
+#decryptRSAKeysAndReturn('A') # Odszyfrowanie kluczy RSA z dysku i zwrocenie ich jako zmienne
 
 #  Socket Receive
-receiveHOST = '192.168.1.12'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
+receiveHOST = '192.168.1.12'  # tomek - 192.168.1.12 ,jakub - 192.168.0.193, dla wszystkich 127.0.0.1
 receivePORT = 8888
 receiveBUFFER = 4194304  # 2097152 # 1048576   # 1024
 
@@ -25,7 +25,7 @@ socketReceiveA = socket.socket(socket.AF_INET,
 
 # Socket Send
 
-sendHOST = '127.0.0.1'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
+sendHOST = '127.0.0.1'   # tomek - 192.168.1.12 ,jakub - 192.168.0.193, dla wszystkich 127.0.0.1
 sendPORT = 8888
 sendBUFFER = 4194304  # 2097152 # 1048576   # 1024
 

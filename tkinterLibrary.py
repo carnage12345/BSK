@@ -4,7 +4,7 @@ import time
 
 from Crypto.Cipher import AES
 
-from RSAKeysLibrary import encrypt, decrypt, sign_sha1, verify_sha1
+from RSAKeysLibrary import *
 import os
 
 
@@ -128,5 +128,8 @@ def check_queue(q, control):
         print('queue is not empty')
         control.set(q.get())
 
+def button_set_password(password_entry, letter):
+    user_friendly_password = password_entry.get()
+    encryptRSAKeysAndSave(letter, user_friendly_password)
 
 

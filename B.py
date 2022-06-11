@@ -1,5 +1,5 @@
 import socket
-from RSAKeysLibrary import generate_keys, load_keys
+from RSAKeysLibrary import *
 from os.path import exists
 from queue import Queue
 from Threads.ReceiveThread import ReceiveThread
@@ -7,25 +7,25 @@ from Threads.GuiThread import GuiThread
 
 
 # Keys
-if not exists('./PublicKeys/publicKeyB.pem') or not exists('./PrivateKeys/privateKeyB.pem'):
+if not exists('./KeysB/PublicKeys/publicKeyB.pem') or not exists('./KeysB/PrivateKeys/privateKeyB.pem'):
     generate_keys('B')  # Wygenerowanie kluczy RSA
 
-# encryptRSAKeysAndSave()  # Utworzenie klucza lokalnego, zaszyfrowanie kluczy RSA kluczem lokalnym i zapisanie na dysku
+#encryptRSAKeysAndSave('B')  # Utworzenie klucza lokalnego, zaszyfrowanie kluczy RSA kluczem lokalnym i zapisanie na dysku
 # publicKeyB, privateKeyB = load_keys('B')
-# decryptRSAKeysAndReturn() # Odszyfrowanie kluczy RSA z dysku i zwrocenie ich jako zmienne
+#decryptRSAKeysAndReturn('B')  # Odszyfrowanie kluczy RSA z dysku i zwrocenie ich jako zmienne
 
 # Keys test
 # encrypt_decrypt_message(publicKeyB, privateKeyB)
 
 #  Sockets
-receiveHOST = '127.0.0.1'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
+receiveHOST = '127.0.0.1'   # tomek - 192.168.1.12 ,jakub - 192.168.0.193, dla wszystkich 127.0.0.1
 receivePORT = 8888
 receiveBUFFER = 4194304  # 2097152 # 1048576   # 1024
 
 socketReceiveB = socket.socket(socket.AF_INET,
                                socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
 
-sendHOST = '192.168.1.12'  # jaworski mial 192.168.0.193, tu ip wpisać trzeba sprawdzić działa zawsze na 127.0.0.1 nie działa dla innych...
+sendHOST = '192.168.1.12'  # tomek - 192.168.1.12 ,jakub - 192.168.0.193, dla wszystkich 127.0.0.1
 sendPORT = 8888
 sendBUFFER = 4194304  # 2097152 # 1048576   # 1024
 

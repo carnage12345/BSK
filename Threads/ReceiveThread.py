@@ -72,7 +72,7 @@ class ReceiveThread(threading.Thread):
                 fileSize = int(fileSize)  # fileSize in bytes
 
                 # progress
-                with open("./acquiredFiles/" + fileName, "wb") as f:
+                with open("./AcquiredFiles" + self.name + "/" + fileName, "wb") as f:
                     receivedDataSize = 0
 
                     startTime = time.time()
@@ -87,7 +87,7 @@ class ReceiveThread(threading.Thread):
                     endTime = time.time()
                     # print("plik odebrany:", endTime - startTime, ' s')
                     self.q.put('You received a file:\nName: ' + fileName + '\nPath: ' + str(os.getcwd()) +
-                               '\\acquiredFiles\\' + fileName + '\nSize: ' + str(fileSize / 1048576) +
+                               '\\AcquiredFiles' + self.name + "\\" + fileName + '\nSize: ' + str(fileSize / 1048576) +
                                ' MB\nTransfer time: ' + str(endTime - startTime) + ' s')
 
             if TEST == "message_encoded":
