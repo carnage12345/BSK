@@ -3,6 +3,8 @@ import threading
 import time
 import os
 from RSAKeysLibrary import *
+from tkinterLibrary import get_user_friendly_password
+
 
 class ReceiveThread(threading.Thread):
     def __init__(self, threadID, name, socket, HOST, PORT, BUFFER, queue):
@@ -37,7 +39,7 @@ class ReceiveThread(threading.Thread):
 
         # JAWORSKI ZMIANA 1
 
-        publicKey, privateKey = load_keys(self.name)
+        publicKey, privateKey = load_keys(self.name) # decryptRSAKeysAndReturn(self.name, get_user_friendly_password())
 
         #  SEND PUBLIC KEY TO CLIENT (also receive key from client)
         print("wysyłam klucz publiczny (A)")

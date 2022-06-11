@@ -1,70 +1,31 @@
-from tkinter import ttk
+from tkinter import *
 import tkinter as tk
-from tkinter.messagebox import showinfo
-import random
 
-# root window
-root = tk.Tk()
-root.geometry('400x220')
-root.title('Progressbar Demo')
+window = tk.Tk()
+window.title('Client ')
 
-
-def update_progress_label():
-    return f"Current Progress: {pb['value']}%"
+tk.Label(window, text='Enter your user-friendly password:').pack()
+password_entry = tk.Entry(window)
+password_entry.pack()
+var = 0
 
 
-def progress():
-    if pb['value'] < 100:
-        pb['value'] += 10
-        value_label['text'] = update_progress_label()
-    else:
-        showinfo(message='The progress completed!')
+def get_password():
+    global var
+    var = password_entry.get()
+    # with open('./PasswordA/passA.txt', 'wb') as f:
+    #     f.write(var)
+
+def printing():
+    print(var)
+
+tk.Button(window, text="Set password",
+                                   command=lambda: get_password()).pack()
+
+tk.Button(window, text="Print variable",
+                                   command=lambda: printing()).pack()
 
 
-def stop():
-    pb.stop()
-    value_label['text'] = update_progress_label()
+window.mainloop()
 
 
-def test():
-    progress()
-
-
-
-# progressbar
-pb = ttk.Progressbar(
-    root,
-    orient='horizontal',
-    mode='determinate',
-    length=280
-)
-# place the progressbar
-pb.grid(column=0, row=0, columnspan=2, padx=10, pady=20)
-
-# label
-value_label = ttk.Label(root, text=update_progress_label())
-value_label.grid(column=0, row=1, columnspan=2)
-
-# start button
-start_button = ttk.Button(
-    root,
-    text='Progress'  # ,
-    # command=progress
-)
-start_button.grid(column=0, row=2, padx=10, pady=10, sticky=tk.E)
-
-stop_button = ttk.Button(
-    root,
-    text='Stop',
-    command=stop
-)
-stop_button.grid(column=1, row=2, padx=10, pady=10, sticky=tk.W)
-
-test_button = ttk.Button(
-    root,
-    text='Test',
-    command=test
-)
-test_button.grid(column=1, row=3, padx=10, pady=10, sticky=tk.W)
-
-root.mainloop()

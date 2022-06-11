@@ -6,31 +6,24 @@ from Threads.ReceiveThread import ReceiveThread
 from Threads.GuiThread import GuiThread
 
 
-# Keys
+# Create RSA Keys
 if not exists('./KeysB/PublicKeys/publicKeyB.pem') or not exists('./KeysB/PrivateKeys/privateKeyB.pem'):
     generate_keys('B')  # Wygenerowanie kluczy RSA
 
-#encryptRSAKeysAndSave('B')  # Utworzenie klucza lokalnego, zaszyfrowanie kluczy RSA kluczem lokalnym i zapisanie na dysku
-# publicKeyB, privateKeyB = load_keys('B')
-#decryptRSAKeysAndReturn('B')  # Odszyfrowanie kluczy RSA z dysku i zwrocenie ich jako zmienne
-
-# Keys test
-# encrypt_decrypt_message(publicKeyB, privateKeyB)
-
-#  Sockets
+# Create Sockets
+# Socket for receiving data
 receiveHOST = '127.0.0.1'   # tomek - 192.168.1.12 ,jakub - 192.168.0.193, dla wszystkich 127.0.0.1
 receivePORT = 8888
-receiveBUFFER = 4194304  # 2097152 # 1048576   # 1024
+receiveBUFFER = 4194304
+socketReceiveB = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-socketReceiveB = socket.socket(socket.AF_INET,
-                               socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
-
+# Socket for sending data
 sendHOST = '192.168.1.12'  # tomek - 192.168.1.12 ,jakub - 192.168.0.193, dla wszystkich 127.0.0.1
 sendPORT = 8888
-sendBUFFER = 4194304  # 2097152 # 1048576   # 1024
+sendBUFFER = 4194304
+socketSendB = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-socketSendB = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET - socket family INET - ipv4 INET6 -ipv6
-
+# Create Queue
 q = Queue()
 
 # Create threads

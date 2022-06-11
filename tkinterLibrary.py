@@ -14,6 +14,7 @@ def button_send_message(entry, client):
     client.send("message".encode("utf8"))
     client.send(message.encode("utf8"))
 
+
 def send_message_encoded_rsa(tk_entry_encoded, client, publicKey, privateKey):
     message = tk_entry_encoded.get()
     print(message)
@@ -65,7 +66,6 @@ def encrypt_decrypt_message(publicKey, privateKey):
         print("signature verified")
     else:
         print("Could not verify the message signature")
-
 
 
 def button_open_file_function(pathStringVar):
@@ -128,8 +128,11 @@ def check_queue(q, control):
         print('queue is not empty')
         control.set(q.get())
 
+
 def button_set_password(password_entry, letter):
     user_friendly_password = password_entry.get()
     encryptRSAKeysAndSave(letter, user_friendly_password)
 
 
+def get_user_friendly_password(password):
+    return password

@@ -2,10 +2,14 @@ import threading
 import tkinter as tk
 from tkinter import ttk
 from tkinter import OptionMenu
+from tkinterLibrary import button_set_password
 from RSAKeysLibrary import *
 from tkinterLibrary import *
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
+
+user_friendly_password = 0
+
 
 class GuiThread(threading.Thread):
     def __init__(self, threadID, name, socket, HOST, PORT, BUFFER, queue):
@@ -17,6 +21,7 @@ class GuiThread(threading.Thread):
         self.PORT = PORT
         self.BUFFER = BUFFER
         self.q = queue
+        self.password = 0
 
     def run(self):
         print("Starting " + self.name + " GUI Thread")
@@ -28,7 +33,8 @@ class GuiThread(threading.Thread):
         print(self.socket.recv(self.BUFFER).decode("utf8"))
 
         #  RECEIVE PUBLIC KEY FROM SERVER
-        publicKey, privateKey = load_keys(self.name)
+        publicKey, privateKey = load_keys(self.name)  # decryptRSAKeysAndReturn(self.name)
+
         clientPublicKey = rsa.key.PublicKey.load_pkcs1(self.socket.recv(self.BUFFER), format='PEM')  # DER
         print(clientPublicKey)
 
@@ -40,21 +46,15 @@ class GuiThread(threading.Thread):
 
         print("CREATING SESSION KEY:")
 
-        sessionKey = b'mysecretpassword'  # 16 byte password
         sessionKeyRandom = os.urandom(16)  # PODMIENIĆ NA TO!!!!
-
 
         # SEND SESSION KEY TO SERVER
         print("sending session KEY")
-        print(sessionKey)
-        ciphertext = encrypt_session_key_with_rsa(sessionKey, clientPublicKey)  # zamienic na sessionKey3Random
+        print(sessionKeyRandom)
+        ciphertext = encrypt_session_key_with_rsa(sessionKeyRandom, clientPublicKey)  # zamienic na sessionKey3Random
         # signature
         self.socket.send(ciphertext)
         print("sent session KEY\n")
-
-
-
-
 
         #  TKINTER
         window = tk.Tk()
@@ -75,12 +75,22 @@ class GuiThread(threading.Thread):
         sendButton.pack()
         tk.Label(window, textvariable=pathStringVar).pack()
 
-
         tk.Label(window, text='Enter your user-friendly password:').pack()
         password_entry = tk.Entry(window)
         password_entry.pack()
-        passwordButton = tk.Button(window, text='enter', command=lambda: button_set_password(password_entry, self.name))
-        passwordButton.pack()
+
+        def get_password():
+            global user_friendly_password
+            user_friendly_password = password_entry.get()
+
+        def printing():
+            print(user_friendly_password)
+
+        tk.Button(window, text="Set password",
+                                           command=lambda: get_password()).pack()
+        tk.Button(window, text="Print variable",
+                  command=lambda: printing()).pack()
+
 
         # pb = Progress Bar
         tk.Label(window, text='Progress Bar:').pack()
@@ -107,12 +117,12 @@ class GuiThread(threading.Thread):
         cipheringMode = clicked.get()
         print(cipheringMode)
 
-        # JAWORSKI
         entry_encoded = tk.Entry(window)
         entry_encoded.pack()
 
         sendButtonEncoded = tk.Button(window, text='send message Encoded RSA',
-                                      command=lambda: send_message_encoded_rsa(entry_encoded, self.socket, publicKey, privateKey))
+                                      command=lambda: send_message_encoded_rsa(entry_encoded, self.socket, publicKey,
+                                                                               privateKey))
         sendButtonEncoded.pack()
 
         #  message encoded with CBC
@@ -120,10 +130,9 @@ class GuiThread(threading.Thread):
         entry_CBC.pack()
 
         tk_sendButtonCBC = tk.Button(window, text='send message Encoded CBC',
-                                     command=lambda: send_message_encoded_cbc(entry_CBC, 'Gowno Morlina', pad, self.socket))
+                                     command=lambda: send_message_encoded_cbc(entry_CBC, 'Nicosc', pad, self.socket))
         tk_sendButtonCBC.pack()
 
-        # MOJE
         fileSendButton = tk.Button(window, text='send file',
                                    command=lambda: button_send_file_function(self.socket, self.BUFFER,
                                                                              pathStringVar.get(), pb, pbDescription,

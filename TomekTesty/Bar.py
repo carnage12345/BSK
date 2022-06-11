@@ -18,7 +18,7 @@ def progress():
         pb['value'] += 20
         value_label['text'] = update_progress_label()
     else:
-        showinfo(message='The progress completed!')
+        showinfo(message='The progress completed!', entry='wpisz cos')
 
 
 def stop():
