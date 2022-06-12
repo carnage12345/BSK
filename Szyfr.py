@@ -7,7 +7,7 @@ from Crypto.Util.Padding import pad, unpad
 import rsa
 
 (publicKey, privateKey) = rsa.newkeys(1024)
-
+print(publicKey.__class__)
 class AESCipher:
     def __init__(self):
         password = 'lolo'
@@ -25,16 +25,36 @@ class AESCipher:
         return unpad(self.cipher.decrypt(raw[AES.block_size:]), AES.block_size)
 
 
-with open('publicKeyA.pem', 'wb') as f:
-    f.write(publicKey.save_pkcs1())
+publicKeyBytes = publicKey.save_pkcs1()
 
-with open('publicKeyA.pem', 'rb') as f:
-    publicKey = f.read()
+print('bajtowy klucz publiczny: ', publicKeyBytes)
+# print(publicKey.__class__)
 
-print(publicKey)
+publicKeyBytesUTF8 = publicKeyBytes.decode('utf-8')
+# print(publicKeyBytesUTF8 )
 cbc = AESCipher()
-encryptedPublicKey = cbc.encrypt(str(publicKey))
-with open('publicKeyA.pem', 'rb') as f:
-    f.write()
+encryptedPublicKey = cbc.encrypt(publicKeyBytesUTF8)
+# print(encryptedPublicKey)
+
+with open('encryptedA.txt', 'wb') as f:
+    f.write(encryptedPublicKey)
+
+with open('encryptedA.txt', 'rb') as f:
+    output = f.read().decode('utf-8')
+
+# print(output)
+
+decryptedPublicKey = cbc.decrypt(output)
+# decryptedPublicKey = cbc.decrypt(encryptedPublicKey)
+
+print('Odszyfrowany klucz publiczny: ', decryptedPublicKey)
 
 
+ready_key = rsa.PublicKey.load_pkcs1(decryptedPublicKey)
+print(ready_key.__class__)
+# with open('./Keys' + letter + '/PublicKeys/encryptedPublicKey' + letter + '.pem', 'w') as f:
+#     f.write(cipheredPublicKey)
+#     # f.write(cipheredPublicKey.save_pkcs1('PEM'))
+# with open('./Keys' + letter + '/PrivateKeys/encryptedPrivateKey' + letter + '.pem', 'w') as f:
+#     f.write(cipheredPrivateKey)
+#     # f.write(cipheredPrivateKey.save_pkcs1('PEM'))
