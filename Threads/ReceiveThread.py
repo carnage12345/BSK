@@ -2,8 +2,9 @@
 import threading
 import time
 import os
+
 from RSAKeysLibrary import *
-from tkinterLibrary import get_user_friendly_password
+from Threads.GuiThread import get_password
 
 
 class ReceiveThread(threading.Thread):
@@ -37,19 +38,23 @@ class ReceiveThread(threading.Thread):
         msg = f"Witaj na serwerze , {nick}!".encode("utf8")
         client.send(msg)
 
-        # JAWORSKI ZMIANA 1
-
-        publicKey, privateKey = load_keys(self.name) # decryptRSAKeysAndReturn(self.name, get_user_friendly_password())
+        # Get RSA jeys
+        user_password = get_password()
+        print(user_password)
+        publicKey, privateKey = decrypt_RSA_keys_and_return(self.name, user_password)
+        # publicKey, privateKey = load_keys(self.name)  # decryptRSAKeysAndReturn(self.name, user_password)
 
         #  SEND PUBLIC KEY TO CLIENT (also receive key from client)
         print("wysyłam klucz publiczny (A)")
         print(publicKey)
-        client.send(publicKey.save_pkcs1(format='PEM'))
+        # client.send(publicKey.save_pkcs1(format='PEM'))
+        client.send(publicKey)
         print("klucz wysłany\n")
 
         # RECEIVE PUBLIC KEY FROM CLIENT
         print("odbieram public key (B)\n")
-        clientPublicKey = rsa.key.PublicKey.load_pkcs1(client.recv(self.BUFFER), format='PEM')  # DER
+        # clientPublicKey = rsa.key.PublicKey.load_pkcs1(client.recv(self.BUFFER), format='PEM')  # DER
+        clientPublicKey = client.recv(self.BUFFER)
         print("publicKeyB: " + str(clientPublicKey))
 
         # RECEIVE SESSION KEY FROM CLIENT

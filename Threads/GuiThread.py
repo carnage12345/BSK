@@ -8,7 +8,11 @@ from tkinterLibrary import *
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
-user_friendly_password = 0
+user_friendly_password = 'wstepniak'
+
+
+def get_password():
+    return user_friendly_password
 
 
 class GuiThread(threading.Thread):
@@ -21,7 +25,6 @@ class GuiThread(threading.Thread):
         self.PORT = PORT
         self.BUFFER = BUFFER
         self.q = queue
-        self.password = 0
 
     def run(self):
         print("Starting " + self.name + " GUI Thread")
@@ -41,12 +44,13 @@ class GuiThread(threading.Thread):
         #  SEND PUBLIC KEY TO SERVER
         print("wysyłam klucz do Serwera")
         print(publicKey)
-        self.socket.send(publicKey.save_pkcs1(format='PEM'))
+        # self.socket.send(publicKey.save_pkcs1(format='PEM'))
+        self.socket.send(publicKey)
         print("klucz wysłany\n")
 
         print("CREATING SESSION KEY:")
 
-        sessionKeyRandom = os.urandom(16)  # PODMIENIĆ NA TO!!!!
+        sessionKeyRandom = os.urandom(16)
 
         # SEND SESSION KEY TO SERVER
         print("sending session KEY")
@@ -79,18 +83,15 @@ class GuiThread(threading.Thread):
         password_entry = tk.Entry(window)
         password_entry.pack()
 
-        def get_password():
+        def set_password():
             global user_friendly_password
             user_friendly_password = password_entry.get()
 
         def printing():
             print(user_friendly_password)
 
-        tk.Button(window, text="Set password",
-                                           command=lambda: get_password()).pack()
-        tk.Button(window, text="Print variable",
-                  command=lambda: printing()).pack()
-
+        tk.Button(window, text="Set password", command=lambda: set_password()).pack()
+        tk.Button(window, text="Print variable", command=lambda: printing()).pack()
 
         # pb = Progress Bar
         tk.Label(window, text='Progress Bar:').pack()

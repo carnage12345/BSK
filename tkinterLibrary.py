@@ -1,9 +1,6 @@
 from tkinter import filedialog
 from tkinter.messagebox import showinfo
 import time
-
-from Crypto.Cipher import AES
-
 from RSAKeysLibrary import *
 import os
 
@@ -131,8 +128,7 @@ def check_queue(q, control):
 
 def button_set_password(password_entry, letter):
     user_friendly_password = password_entry.get()
-    encryptRSAKeysAndSave(letter, user_friendly_password)
+    encrypt_RSA_keys_and_save(letter, user_friendly_password)
 
 
-def get_user_friendly_password(password):
-    return password
+
